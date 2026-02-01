@@ -1,6 +1,7 @@
+using Core.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Core.Events;
+using UnityEngine.Windows;
 
 namespace Player
 {
@@ -24,21 +25,30 @@ namespace Player
 
         void Update()
         {
-            Vector2 m = move.action.ReadValue<Vector2>();
-            Vector2 l = look.action.ReadValue<Vector2>();
+            Vector2 input = move.action.ReadValue<Vector2>();
+            Vector2 lookInput = look.action.ReadValue<Vector2>();
 
             Camera cam = Camera.main;
-
             if (cam != null)
             {
-                GameEvents.OnCharacterMove?.Invoke(
-                    cam.transform.forward * m.y +
-                    cam.transform.right * m.x
-                );
+                // calculate the direction based on XZ of the camera
+                Vector3 camForward = cam.transform.forward;
+                camForward.y = 0f;
+                camForward.Normalize();
+
+                Vector3 camRight = cam.transform.right;
+                camRight.y = 0f;
+                camRight.Normalize();
+
+                Vector3 moveDir = camForward * input.y + camRight * input.x;
+
+                // shere direction with CharacterMotor
+                GameEvents.OnCharacterMove?.Invoke(moveDir);
             }
 
-            GameEvents.OnCameraYaw?.Invoke(l.x * lookSpeed * Time.deltaTime);
-            GameEvents.OnCameraPitch?.Invoke(-l.y * lookSpeed * Time.deltaTime);
+            // camera events
+            GameEvents.OnCameraYaw?.Invoke(lookInput.x * lookSpeed * Time.deltaTime);
+            GameEvents.OnCameraPitch?.Invoke(-lookInput.y * lookSpeed * Time.deltaTime);
         }
     }
 }
