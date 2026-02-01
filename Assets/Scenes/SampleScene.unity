@@ -166,6 +166,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1486476209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &283738724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 283738726}
+  - component: {fileID: 283738725}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &283738725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283738724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 708470396fbc0694593e21890a8f9412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Audio::Audio.AudioManager
+  poolSize: 10
+  audioSourcePrefab: {fileID: 2110283727329855054, guid: 06d15daedb2d374409095f08fc305fc2, type: 3}
+  defaultFootstep: {fileID: 8300000, guid: b4cac97dd8ef8f9438188e8530e1667c, type: 3}
+--- !u!4 &283738726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283738724}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.70713, y: 0.49499, z: 0.70713}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,6 +601,7 @@ GameObject:
   - component: {fileID: 1224827620}
   - component: {fileID: 1224827619}
   - component: {fileID: 1224827618}
+  - component: {fileID: 1224827624}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -693,6 +741,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1486476209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1224827624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224827617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e3c510fb5c4df242b67e7aa043f28a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Character::Character.CharacterFootsteps
+  stepInterval: 0.5
 --- !u!1 &1486476208
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,3 +941,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1486476209}
   - {fileID: 1823022047}
+  - {fileID: 283738726}

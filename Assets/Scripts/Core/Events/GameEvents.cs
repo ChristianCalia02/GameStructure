@@ -15,5 +15,11 @@ namespace Core.Events {
         public static Action<Transform> OnCameraTargetChanged;
         public static Action<float> OnCameraYaw;
         public static Action<float> OnCameraPitch;
+
+        // Audio
+        public static Action<AudioClip, Vector3> OnPlaySoundAtPosition;
+        public static Action<AudioClip> OnPlayUISound;
+        //----SFX
+        public static Action<Vector3> OnFootstep;
     }
 }

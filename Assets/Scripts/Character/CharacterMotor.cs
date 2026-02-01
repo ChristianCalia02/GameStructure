@@ -11,6 +11,8 @@ namespace Character {
         private CharacterController controller;
         private Vector3 moveInput;
 
+        public bool IsMoving { get; private set; }
+
         void Awake()
         {
             controller = GetComponent<CharacterController>();
@@ -28,7 +30,8 @@ namespace Character {
 
         void Update()
         {
-            controller.SimpleMove(moveInput * speed);
+            IsMoving = moveInput.sqrMagnitude > 0.01f;
+            controller.Move(moveInput * speed * Time.deltaTime);
             moveInput = Vector3.zero;
         }
 
