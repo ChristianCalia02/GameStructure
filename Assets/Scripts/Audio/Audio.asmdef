@@ -1,9 +1,8 @@
 {
-    "name": "Character",
-    "rootNamespace": "Character",
+    "name": "Audio",
+    "rootNamespace": "Audio",
     "references": [
-        "GUID:9bfef825bf1f65849abc38b6aa408987",
-        "GUID:7feeb8599c91a0248b4d11017b154a93"
+        "GUID:9bfef825bf1f65849abc38b6aa408987"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
