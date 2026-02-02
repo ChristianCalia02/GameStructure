@@ -34,7 +34,7 @@ namespace Cam
                 return;
 
             //transform.position = target.TransformPoint(Vector3.up * eyesLevel);
-            transform.position = target.position + Vector3.up * eyesLevel;
+            transform.position = target.position + (Vector3.up * eyesLevel + target.forward * 0.2f);
         }
         private void AdaptRotation()
         {

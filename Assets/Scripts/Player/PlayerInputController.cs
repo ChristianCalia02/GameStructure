@@ -10,6 +10,8 @@ namespace Player
         [Header("Actions")]
         [SerializeField] 
         private InputActionReference move;
+        [SerializeField] 
+        private InputActionReference sprint;
         [SerializeField]
         private InputActionReference lookDirectAction;
         [SerializeField]
@@ -35,6 +37,7 @@ namespace Player
 
         void OnEnable()
         {
+            sprint.action.Enable();
             move.action.Enable();
             lookDirectAction.action.Enable();
             lookRateAction.action.Enable();
@@ -42,6 +45,7 @@ namespace Player
 
         void OnDisable()
         {
+            sprint.action.Disable();
             move.action.Disable();
             lookDirectAction.action.Disable();
             lookRateAction.action.Disable();
@@ -51,11 +55,16 @@ namespace Player
         {
             Vector2 inputMove = move.action.ReadValue<Vector2>();
             Transform camTransform = Camera.main.transform;
-            
-            //Charactermove
-            GameEvents.OnCharacterMove?.Invoke(camTransform.forward, inputMove.y);
-            GameEvents.OnCharacterMove?.Invoke(camTransform.right, inputMove.x);
 
+            Vector3 moveDir = camTransform.forward * inputMove.y + camTransform.right * inputMove.x;
+            moveDir.y = 0f;
+            if (moveDir.sqrMagnitude > 1f)
+                moveDir.Normalize();
+
+            GameEvents.OnCharacterMove?.Invoke(moveDir, 1f);
+
+            bool isSprinting = sprint.action.ReadValue<float>() > 0.5f;
+            GameEvents.OnCharacterSprint?.Invoke(isSprinting);
 
             Vector2 inputLook = lookRateAction.action.ReadValue<Vector2>();
             

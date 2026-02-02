@@ -3,24 +3,25 @@ using Core.Interfaces;
 using UnityEngine;
 using UnityCharCtrl = UnityEngine.CharacterController;
 
-namespace Character { 
+namespace Character
+{
     [RequireComponent(typeof(UnityCharCtrl))]
-    public class CharacterMotor : MonoBehaviour, ICharacterMover
+    public class CharacterMotor : MonoBehaviour
     {
         private UnityCharCtrl ctrl;
 
-        [SerializeField] private float speed = 3f;
         [SerializeField] private float rotationSpeed = 10f;
-
         private Vector3 moveDirection;
+        private float verticalVelocity;
 
-        [SerializeField] private float groundCheckDistance = 0.2f; // distance with foot
-        [SerializeField] private float groundCheckRadius = 0.3f;   // ray of spherecast
-        [SerializeField] private LayerMask groundMask;              // layer from ground
-        private bool isGrounded;
+        [SerializeField] private float groundCheckDistance = 0.2f;
+        [SerializeField] private float groundCheckRadius = 0.3f;
+        [SerializeField] private LayerMask groundMask;
 
         [SerializeField] private Animator animator;
         public bool IsMoving { get; private set; }
+
+        private float currentSpeed = 0f;
 
         void Awake()
         {
@@ -41,52 +42,58 @@ namespace Character {
 
         void Update()
         {
-            CheckGround();
+            // Movement
+            Vector3 worldMove = moveDirection * currentSpeed;
 
-            Vector3 moveDirection = ConsumeMoveDirection();
-            Vector3 worldMove = moveDirection * speed;
+            // Gravity
+            if (!IsGrounded())
+                verticalVelocity += Physics.gravity.y * Time.deltaTime;
+            else
+                verticalVelocity = -2f;
 
-            ctrl.SimpleMove(worldMove);
+            worldMove.y = verticalVelocity;
 
-            // update animations
+            ctrl.Move(worldMove * Time.deltaTime);
+
+            // Animations
             if (animator != null)
             {
                 Vector3 localMove = transform.InverseTransformDirection(moveDirection);
-                float moveMag = localMove.magnitude;
+                animator.SetFloat("MoveX", localMove.x, 0.1f, Time.deltaTime);
+                animator.SetFloat("MoveZ", localMove.z, 0.1f, Time.deltaTime);
+                IsMoving = moveDirection.sqrMagnitude > 0.01f;
+            }
 
-                animator.SetFloat("MoveX", localMove.x);
-                animator.SetFloat("MoveZ", localMove.z);
+            // reset moveDirection all frame
+            moveDirection = Vector3.zero;
+        }
 
+        public void Move(Vector3 direction, float magnitude)
+        {
+            moveDirection += direction.normalized * magnitude;
+
+            if (moveDirection.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(moveDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
             }
         }
 
-        public void Move(Vector3 worldDirection, float magnitude = 1.0f)
+        public void SetSpeed(float speed)
         {
-            moveDirection += worldDirection * magnitude;
-        }
-        public Vector3 ConsumeMoveDirection()
-        {
-            Vector3 currentMoveDirection = Vector3.ClampMagnitude(moveDirection, 1.0f);
-            float mag = currentMoveDirection.magnitude;
-            currentMoveDirection.y = 0.0f;
-            currentMoveDirection = currentMoveDirection.normalized * mag;
-            moveDirection = Vector3.zero;
-            return currentMoveDirection;
+            currentSpeed = speed;
         }
 
-
-        private void CheckGround()
+        public void SetRunningAnimation(bool isRunning)
         {
-            Vector3 origin = transform.position + Vector3.up * 0.1f; // leggermente sopra i piedi
-            isGrounded = Physics.SphereCast(
-                origin,
-                groundCheckRadius,
-                Vector3.down,
-                out RaycastHit hit,
-                groundCheckDistance + 0.1f,
-                groundMask,
-                QueryTriggerInteraction.Ignore
-            );
+            if (animator != null)
+                animator.SetBool("IsRunning", isRunning);
+        }
+
+        private bool IsGrounded()
+        {
+            Vector3 origin = transform.position + Vector3.up * 0.1f;
+            return Physics.SphereCast(origin, groundCheckRadius, Vector3.down, out _, groundCheckDistance + 0.1f, groundMask);
         }
 
         private void RotateCharacter(float degrees)
