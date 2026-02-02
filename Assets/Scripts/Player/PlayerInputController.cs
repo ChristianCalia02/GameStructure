@@ -1,9 +1,7 @@
 using Core.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
-using UnityEngine.Windows;
-using static UnityEngine.EventSystems.StandaloneInputModule;
+
 
 namespace Player
 {

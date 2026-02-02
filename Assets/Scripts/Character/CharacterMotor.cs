@@ -1,11 +1,9 @@
 using Core.Events;
 using Core.Interfaces;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityCharCtrl = UnityEngine.CharacterController;
 
 namespace Character { 
-    [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(UnityCharCtrl))]
     public class CharacterMotor : MonoBehaviour, ICharacterMover
     {
@@ -14,7 +12,6 @@ namespace Character {
         [SerializeField] private float speed = 3f;
         [SerializeField] private float rotationSpeed = 10f;
 
-        private CharacterController controller;
         private Vector3 moveDirection;
 
         [SerializeField] private float groundCheckDistance = 0.2f; // distance with foot
@@ -27,18 +24,19 @@ namespace Character {
 
         void Awake()
         {
-            controller = GetComponent<CharacterController>();
             ctrl = GetComponent<UnityCharCtrl>();
         }
 
         void OnEnable()
         {
             GameEvents.OnCharacterMove += Move;
+            GameEvents.OnCameraYaw += RotateCharacter;
         }
 
         void OnDisable()
         {
             GameEvents.OnCharacterMove -= Move;
+            GameEvents.OnCameraYaw -= RotateCharacter;
         }
 
         void Update()
@@ -58,6 +56,7 @@ namespace Character {
 
                 animator.SetFloat("MoveX", localMove.x);
                 animator.SetFloat("MoveZ", localMove.z);
+
             }
         }
 
@@ -88,6 +87,11 @@ namespace Character {
                 groundMask,
                 QueryTriggerInteraction.Ignore
             );
+        }
+
+        private void RotateCharacter(float degrees)
+        {
+            transform.Rotate(Vector3.up, degrees);
         }
     }
 }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c1b3040f89fa88540bd316ffc03c0bc7
+guid: 86b04f672ac794a488aa87d4c76cd9ad
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,7 +31,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: RightWalk.com
+      name: RightWalk(inPlace).com
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
@@ -44,9 +44,9 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 1
-      loopBlendPositionXZ: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 1

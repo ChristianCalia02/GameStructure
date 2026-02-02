@@ -23,9 +23,9 @@ namespace Cam
             Assert.IsNotNull(target);
 
             pitch = 0.0f;
-            yaw = target.eulerAngles.y;
+            //yaw = target.eulerAngles.y;
 
-            LateUpdate();
+            //LateUpdate();
         }
 
         private void AdaptPosition()
@@ -33,7 +33,8 @@ namespace Cam
             if (target == null)
                 return;
 
-            transform.position = target.TransformPoint(Vector3.up * eyesLevel);
+            //transform.position = target.TransformPoint(Vector3.up * eyesLevel);
+            transform.position = target.position + Vector3.up * eyesLevel;
         }
         private void AdaptRotation()
         {
