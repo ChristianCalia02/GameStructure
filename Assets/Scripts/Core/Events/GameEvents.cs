@@ -11,6 +11,7 @@ namespace Core.Events {
         //Character
         public static Action<Vector3, float> OnCharacterMove;
         public static Action<bool> OnCharacterSprint;
+        public static Action OnCharacterJump;
 
         //Camera
         public static Action<Transform> OnCameraTargetChanged;

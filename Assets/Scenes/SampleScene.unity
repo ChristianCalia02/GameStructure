@@ -150,14 +150,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Player::Player.PlayerInputController
   move: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   sprint: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  jump: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lookDirectAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lookRateAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   cameraSpeedDirect: 0.25
-  invertCameraYawDirect: 0
-  invertCameraPitchDirect: 0
   cameraSpeedRate: 30
-  invertCameraYawRate: 0
-  invertCameraPitchRate: 0
 --- !u!4 &191493612
 Transform:
   m_ObjectHideFlags: 0
@@ -782,6 +779,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1275819693}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1275819694}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1275819695}
   m_SourcePrefab: {fileID: 100100000, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
 --- !u!1 &1275819687 stripped
 GameObject:
@@ -814,12 +817,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Character::Character.CharacterMotor
   rotationSpeed: 10
-  groundCheckDistance: 0.2
-  groundCheckRadius: 0.3
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 64
-  animator: {fileID: 1275819692}
+  jumpHeight: 2
+  gravityMultiplier: 1
 --- !u!143 &1275819690
 CharacterController:
   m_ObjectHideFlags: 0
@@ -870,6 +869,33 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 6
   deceleration: 100
+  animator: {fileID: 1275819692}
+  isSprinting: 0
+--- !u!114 &1275819694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1275819687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8161b8246625b1141af60cc5350b54cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Character::Character.CharacterJump
+--- !u!114 &1275819695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1275819687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3540d6ce87e6f464daaeeb8536a0c876, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Character::Character.CharacterAnimator
+  animator: {fileID: 1275819692}
 --- !u!1 &1486476208
 GameObject:
   m_ObjectHideFlags: 0

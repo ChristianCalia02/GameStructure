@@ -2,82 +2,81 @@ using Core.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
 namespace Player
 {
     public class PlayerInputController : MonoBehaviour
     {
         [Header("Actions")]
-        [SerializeField] 
-        private InputActionReference move;
-        [SerializeField] 
-        private InputActionReference sprint;
-        [SerializeField]
-        private InputActionReference lookDirectAction;
-        [SerializeField]
-        private InputActionReference lookRateAction;
+        [SerializeField] private InputActionReference move;
+        [SerializeField] private InputActionReference sprint;
+        [SerializeField] private InputActionReference jump;
+        [SerializeField] private InputActionReference lookDirectAction;
+        [SerializeField] private InputActionReference lookRateAction;
 
         [Header("Cam")]
-        [SerializeField]
-        [Range(0f, 5f)]
-        private float cameraSpeedDirect = 0.25f;
-        [SerializeField]
-        private bool invertCameraYawDirect = false;
-        [SerializeField]
-        private bool invertCameraPitchDirect = false;
-
-        [SerializeField]
-        [Range(0f, 360f)]
-        private float cameraSpeedRate = 30.0f;
-        [SerializeField]
-        private bool invertCameraYawRate = false;
-        [SerializeField]
-        private bool invertCameraPitchRate = false;
-
+        [SerializeField] private float cameraSpeedDirect = 0.25f;
+        [SerializeField] private float cameraSpeedRate = 30f;
 
         void OnEnable()
         {
-            sprint.action.Enable();
             move.action.Enable();
+            sprint.action.Enable();
+            jump.action.Enable();
             lookDirectAction.action.Enable();
             lookRateAction.action.Enable();
+
+            jump.action.started += OnJumpStarted;
         }
 
         void OnDisable()
         {
-            sprint.action.Disable();
+            jump.action.started -= OnJumpStarted;
+
             move.action.Disable();
+            sprint.action.Disable();
+            jump.action.Disable();
             lookDirectAction.action.Disable();
             lookRateAction.action.Disable();
         }
 
         void Update()
         {
-            Vector2 inputMove = move.action.ReadValue<Vector2>();
-            Transform camTransform = Camera.main.transform;
+            HandleMovement();
+            HandleSprint();
+            HandleCamera();
+        }
 
-            Vector3 moveDir = camTransform.forward * inputMove.y + camTransform.right * inputMove.x;
-            moveDir.y = 0f;
-            if (moveDir.sqrMagnitude > 1f)
-                moveDir.Normalize();
+        private void HandleMovement()
+        {
+            Vector2 input = move.action.ReadValue<Vector2>();
+            Transform cam = Camera.main.transform;
 
-            GameEvents.OnCharacterMove?.Invoke(moveDir, 1f);
+            Vector3 dir = cam.forward * input.y + cam.right * input.x;
+            dir.y = 0f;
 
-            bool isSprinting = sprint.action.ReadValue<float>() > 0.5f;
-            GameEvents.OnCharacterSprint?.Invoke(isSprinting);
+            if (dir.sqrMagnitude > 1f)
+                dir.Normalize();
 
-            Vector2 inputLook = lookRateAction.action.ReadValue<Vector2>();
-            
-            //Camrate
-            GameEvents.OnCameraYaw?.Invoke(inputLook.x * cameraSpeedRate * Time.deltaTime * (invertCameraYawDirect ? -1f : 1f));
-            GameEvents.OnCameraPitch?.Invoke(-inputLook.y * cameraSpeedRate * Time.deltaTime * (invertCameraPitchDirect ? -1f : 1f));
+            GameEvents.OnCharacterMove?.Invoke(dir, 1f);
+        }
 
-            inputLook = lookDirectAction.action.ReadValue<Vector2>();
-            
-            //Campitch
-            GameEvents.OnCameraYaw?.Invoke(inputLook.x * cameraSpeedDirect * (invertCameraYawRate ? -1f : 1f));
-            GameEvents.OnCameraPitch?.Invoke(-inputLook.y * cameraSpeedDirect * (invertCameraPitchRate ? -1f : 1f));
+        private void HandleSprint()
+        {
+            bool sprinting = sprint.action.ReadValue<float>() > 0.5f;
+            GameEvents.OnCharacterSprint?.Invoke(sprinting);
+        }
 
+        private void HandleCamera()
+        {
+            Vector2 look = lookRateAction.action.ReadValue<Vector2>();
+
+            GameEvents.OnCameraYaw?.Invoke(look.x * cameraSpeedRate * Time.deltaTime);
+            GameEvents.OnCameraPitch?.Invoke(-look.y * cameraSpeedRate * Time.deltaTime);
+        }
+
+        private void OnJumpStarted(InputAction.CallbackContext ctx)
+        {
+            GameEvents.OnCharacterJump?.Invoke();
         }
     }
 }
