@@ -1,16 +1,21 @@
-using UnityEngine;
 using Core.Events;
 using Core.Interfaces;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityCharCtrl = UnityEngine.CharacterController;
 
 namespace Character { 
     [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(UnityCharCtrl))]
     public class CharacterMotor : MonoBehaviour, ICharacterMover
     {
+        private UnityCharCtrl ctrl;
+
         [SerializeField] private float speed = 3f;
         [SerializeField] private float rotationSpeed = 10f;
 
         private CharacterController controller;
-        private Vector3 moveInput;
+        private Vector3 moveDirection;
 
         [SerializeField] private float groundCheckDistance = 0.2f; // distance with foot
         [SerializeField] private float groundCheckRadius = 0.3f;   // ray of spherecast
@@ -23,6 +28,7 @@ namespace Character {
         void Awake()
         {
             controller = GetComponent<CharacterController>();
+            ctrl = GetComponent<UnityCharCtrl>();
         }
 
         void OnEnable()
@@ -39,38 +45,36 @@ namespace Character {
         {
             CheckGround();
 
-            Vector3 move = moveInput;
-            move.y = 0f;
+            Vector3 moveDirection = ConsumeMoveDirection();
+            Vector3 worldMove = moveDirection * speed;
 
-            // apply movement
-            controller.Move(move * speed * Time.deltaTime);
-
-            // rotate the player in the movement's direction
-            if (move.sqrMagnitude > 0.01f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(move);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-            }
+            ctrl.SimpleMove(worldMove);
 
             // update animations
             if (animator != null)
             {
-                Vector3 localMove = transform.InverseTransformDirection(move);
+                Vector3 localMove = transform.InverseTransformDirection(moveDirection);
                 float moveMag = localMove.magnitude;
 
                 animator.SetFloat("MoveX", localMove.x);
-                animator.SetFloat("MoveY", localMove.z);
-                animator.SetFloat("MoveMagnitude", moveMag);
+                animator.SetFloat("MoveZ", localMove.z);
             }
-
-            IsMoving = move.sqrMagnitude > 0.01f && isGrounded;
-            moveInput = Vector3.zero;
         }
 
-        public void Move(Vector3 direction)
+        public void Move(Vector3 worldDirection, float magnitude = 1.0f)
         {
-            moveInput += direction;
+            moveDirection += worldDirection * magnitude;
         }
+        public Vector3 ConsumeMoveDirection()
+        {
+            Vector3 currentMoveDirection = Vector3.ClampMagnitude(moveDirection, 1.0f);
+            float mag = currentMoveDirection.magnitude;
+            currentMoveDirection.y = 0.0f;
+            currentMoveDirection = currentMoveDirection.normalized * mag;
+            moveDirection = Vector3.zero;
+            return currentMoveDirection;
+        }
+
 
         private void CheckGround()
         {

@@ -9,7 +9,7 @@ namespace Core.Events {
         public static Action<Vector2> OnLookInput;
 
         //Character
-        public static Action<Vector3> OnCharacterMove;
+        public static Action<Vector3, float> OnCharacterMove;
 
         //Camera
         public static Action<Transform> OnCameraTargetChanged;
