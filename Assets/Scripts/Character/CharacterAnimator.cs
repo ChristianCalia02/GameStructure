@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Character
@@ -9,6 +10,10 @@ namespace Character
 
         private CharacterMotor motor;
         private CharacterSprint sprint;
+
+        private bool lastMoving;
+        private bool lastRunning;
+        private bool lastJumping;
 
         void Awake()
         {
@@ -28,19 +33,35 @@ namespace Character
 
         private void UpdateMovement()
         {
-            animator.SetBool("IsMoving", motor.IsMoving);
+            //animator.SetBool("IsMoving", motor.IsMoving);
+            //Debug.Log("Move");
+            if (motor.IsMoving != lastMoving)
+            {
+                animator.SetBool("IsMoving", motor.IsMoving);
+                lastMoving = motor.IsMoving;
+                Debug.Log("Move");
+            }
+
         }
 
         private void UpdateJump()
         {
-            animator.SetBool("IsJumping", !motor.IsGrounded);
+            if (motor.IsGrounded != lastJumping)
+            {
+                lastJumping = motor.IsGrounded;
+                Debug.Log("Jump");
+            }
         }
 
         private void UpdateSprint()
         {
-            if (sprint == null) return;
+            if(sprint.IsSprinting != lastRunning) { 
+                if (sprint == null) return;
 
-            animator.SetBool("IsRunning", sprint.IsSprinting);
+                animator.SetBool("IsRunning", sprint.IsSprinting);
+                lastRunning = sprint.IsSprinting;
+                Debug.Log("Sprint");
+            }
         }
     }
 }
