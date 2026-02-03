@@ -60,7 +60,7 @@ namespace Character
         private void ApplyGravity()
         {
             if (IsGrounded && verticalVelocity < 0f)
-                verticalVelocity = -2f;
+                verticalVelocity = -4f;
 
             verticalVelocity += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
         }
