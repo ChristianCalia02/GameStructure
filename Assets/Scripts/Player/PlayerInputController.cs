@@ -1,6 +1,7 @@
 using Core.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static PlasticPipe.PlasticProtocol.Messages.Serialization.ItemHandlerMessagesSerialization;
 
 namespace Player
 {
@@ -12,13 +13,16 @@ namespace Player
         [SerializeField] private InputActionReference jump;
         [SerializeField] private InputActionReference lookDirectAction;
         [SerializeField] private InputActionReference lookRateAction;
+        [SerializeField] private InputActionReference toggleLook;
+        [SerializeField] private InputActionReference climb;
 
         [Header("Cam")]
-        [SerializeField] private float cameraSpeedDirect = 0.25f;
+        //[SerializeField] private float cameraSpeedDirect = 0.25f;
         [SerializeField] private float cameraSpeedRate = 30f;
 
         void OnEnable()
         {
+            climb.action.started += OnClimb;
             move.action.Enable();
             sprint.action.Enable();
             jump.action.Enable();
@@ -26,17 +30,21 @@ namespace Player
             lookRateAction.action.Enable();
 
             jump.action.started += OnJumpStarted;
+            toggleLook.action.started += OnToggleLook;
         }
 
         void OnDisable()
         {
             jump.action.started -= OnJumpStarted;
+            toggleLook.action.started -= OnToggleLook;
 
+            
             move.action.Disable();
             sprint.action.Disable();
             jump.action.Disable();
             lookDirectAction.action.Disable();
             lookRateAction.action.Disable();
+            climb.action.started -= OnClimb;
         }
 
         void Update()
@@ -74,9 +82,18 @@ namespace Player
             GameEvents.OnCameraPitch?.Invoke(-look.y * cameraSpeedRate * Time.deltaTime);
         }
 
+        private void OnToggleLook(InputAction.CallbackContext ctx)
+        {
+            GameEvents.OnCameraToggle?.Invoke(true);
+        }
+
         private void OnJumpStarted(InputAction.CallbackContext ctx)
         {
             GameEvents.OnCharacterJump?.Invoke();
+        }
+        private void OnClimb(InputAction.CallbackContext ctx)
+        {
+            GameEvents.OnCharacterClimb?.Invoke();
         }
     }
 }

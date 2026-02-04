@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+using Core.Events;
 using UnityEngine;
 
 namespace Character
 {
-    [RequireComponent(typeof(CharacterMotor))]
+    [RequireComponent(typeof(Animator))]
     public class CharacterAnimator : MonoBehaviour
     {
         [SerializeField] private Animator animator;
@@ -11,57 +11,48 @@ namespace Character
         private CharacterMotor motor;
         private CharacterSprint sprint;
 
-        private bool lastMoving;
-        private bool lastRunning;
-        private bool lastJumping;
-
         void Awake()
         {
             motor = GetComponent<CharacterMotor>();
             sprint = GetComponent<CharacterSprint>();
         }
 
+        void OnEnable()
+        {
+            GameEvents.OnClimbStarted += HandleClimbStarted;
+            GameEvents.OnClimbStopped += HandleClimbStopped;
+        }
+
+        void OnDisable()
+        {
+            GameEvents.OnClimbStarted -= HandleClimbStarted;
+            GameEvents.OnClimbStopped -= HandleClimbStopped;
+        }
+
+        private void HandleClimbStarted()
+        {
+            animator.SetBool("IsHanging", true);
+            animator.Update(0f);
+        }
+
+        private void HandleClimbStopped()
+        {
+            animator.SetBool("IsHanging", false);
+            animator.Update(0f);
+        }
+
         void Update()
         {
-            if (animator == null || motor == null)
-                return;
+            if (motor == null) return;
 
-            UpdateMovement();
-            UpdateJump();
-            UpdateSprint();
-        }
+            animator.SetBool("IsGrounded", motor.IsGrounded);
 
-        private void UpdateMovement()
-        {
-            //animator.SetBool("IsMoving", motor.IsMoving);
-            //Debug.Log("Move");
-            if (motor.IsMoving != lastMoving)
-            {
-                animator.SetBool("IsMoving", motor.IsMoving);
-                lastMoving = motor.IsMoving;
-                Debug.Log("Move");
-            }
+            // movement
+            animator.SetBool("IsMoving", motor.IsMoving);
 
-        }
-
-        private void UpdateJump()
-        {
-            if (motor.IsGrounded != lastJumping)
-            {
-                lastJumping = motor.IsGrounded;
-                Debug.Log("Jump");
-            }
-        }
-
-        private void UpdateSprint()
-        {
-            if(sprint.IsSprinting != lastRunning) { 
-                if (sprint == null) return;
-
+            // sprint
+            if (sprint != null)
                 animator.SetBool("IsRunning", sprint.IsSprinting);
-                lastRunning = sprint.IsSprinting;
-                Debug.Log("Sprint");
-            }
         }
     }
 }

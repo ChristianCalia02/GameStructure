@@ -18,6 +18,10 @@ namespace Character
         [SerializeField] private float gravityMultiplier = 1f;
         private float verticalVelocity;
 
+        [Header("Climbing")]
+        [SerializeField] private MonoBehaviour climbState;
+        private IClimbState climb => climbState as IClimbState;
+
         public bool IsMoving { get; private set; }
         public bool IsGrounded => controller.isGrounded;
 
@@ -31,17 +35,18 @@ namespace Character
         void OnEnable()
         {
             GameEvents.OnCharacterMove += Move;
-            GameEvents.OnCameraYaw += RotateCharacter;
         }
 
         void OnDisable()
         {
             GameEvents.OnCharacterMove -= Move;
-            GameEvents.OnCameraYaw -= RotateCharacter;
         }
 
         void Update()
         {
+            if (climb != null && climb.IsHanging)
+                return;
+
             ApplyGravity();
             ApplyMovement();
         }
@@ -102,11 +107,6 @@ namespace Character
             verticalVelocity = Mathf.Sqrt(
                 2f * jumpHeight * -Physics.gravity.y
             );
-        }
-
-        private void RotateCharacter(float degrees)
-        {
-            transform.Rotate(Vector3.up, degrees);
         }
     }
 }
