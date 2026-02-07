@@ -13,18 +13,18 @@ namespace Cam {
         {
             cam = GetComponent<Camera>();
 
-            GameEvents.OnCameraTargetChanged += SetTarget;
-            GameEvents.OnCameraYaw += RotateYaw;
-            GameEvents.OnCameraPitch += RotatePitch;
-            GameEvents.OnCameraToggle += OnToggleLook;
+            CameraEvents.OnTargetChanged += SetTarget;
+            CameraEvents.OnYaw += RotateYaw;
+            CameraEvents.OnPitch += RotatePitch;
+            CameraEvents.OnToggleLook += OnToggleLook;
         }
 
         protected virtual void OnDisable()
         {
-            GameEvents.OnCameraTargetChanged -= SetTarget;
-            GameEvents.OnCameraYaw -= RotateYaw;
-            GameEvents.OnCameraPitch -= RotatePitch;
-            GameEvents.OnCameraToggle -= OnToggleLook;
+            CameraEvents.OnTargetChanged -= SetTarget;
+            CameraEvents.OnYaw -= RotateYaw;
+            CameraEvents.OnPitch -= RotatePitch;
+            CameraEvents.OnToggleLook -= OnToggleLook;
         }
 
         private void SetTarget(Transform t)

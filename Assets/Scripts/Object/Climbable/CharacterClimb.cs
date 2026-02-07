@@ -17,13 +17,13 @@ namespace Climb
         public void SetAvailableLedge(ClimbableLedge ledge)
         {
             currentLedge = ledge;
-            GameEvents.OnClimbAvailable?.Invoke(true, ledge.LedgePoint);
+            UIEvents.OnClimbAvailable?.Invoke(true, ledge.LedgePoint);
         }
 
         public void ClearLedge()
         {
             currentLedge = null;
-            GameEvents.OnClimbAvailable?.Invoke(false, Vector3.zero);
+            UIEvents.OnClimbAvailable?.Invoke(false, Vector3.zero);
         }
 
         public void StartHang()
@@ -31,13 +31,13 @@ namespace Climb
             if (!CanClimb) return;
 
             IsHanging = true;
-            GameEvents.OnClimbStarted?.Invoke(); 
+            CharacterEvents.OnClimbStarted?.Invoke();
         }
 
         public void StopHang()
         {
             IsHanging = false;
-            GameEvents.OnClimbStopped?.Invoke(); 
+            CharacterEvents.OnClimbStopped?.Invoke();
         }
     }
 }

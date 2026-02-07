@@ -26,21 +26,21 @@ namespace Audio
 
         void OnEnable()
         {
-            GameEvents.OnFootstep += PlayFootstep;
-            GameEvents.OnPlaySoundAtPosition += PlaySoundAtPosition;
-            GameEvents.OnPlayUISound += PlayUISound;
+            AudioEvents.OnFootstep += PlayFootstep;
+            AudioEvents.OnPlayAtPosition += PlaySoundAtPosition;
+            AudioEvents.OnPlayUI += PlayUISound;
         }
 
         void OnDisable()
         {
-            GameEvents.OnFootstep -= PlayFootstep;
-            GameEvents.OnPlaySoundAtPosition -= PlaySoundAtPosition;
-            GameEvents.OnPlayUISound -= PlayUISound;
+            AudioEvents.OnFootstep -= PlayFootstep;
+            AudioEvents.OnPlayAtPosition -= PlaySoundAtPosition;
+            AudioEvents.OnPlayUI -= PlayUISound;
         }
 
         private void PlayFootstep(Vector3 position)
         {
-            GameEvents.OnPlaySoundAtPosition?.Invoke(
+            AudioEvents.OnPlayAtPosition?.Invoke(
                 defaultFootstep,
                 position
             );

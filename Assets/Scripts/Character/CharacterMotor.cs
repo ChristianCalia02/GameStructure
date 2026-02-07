@@ -34,12 +34,12 @@ namespace Character
 
         void OnEnable()
         {
-            GameEvents.OnCharacterMove += Move;
+            CharacterEvents.OnMove += Move;
         }
 
         void OnDisable()
         {
-            GameEvents.OnCharacterMove -= Move;
+            CharacterEvents.OnMove -= Move;
         }
 
         void Update()

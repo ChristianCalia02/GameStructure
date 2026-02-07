@@ -19,14 +19,14 @@ namespace Character
 
         void OnEnable()
         {
-            GameEvents.OnClimbStarted += HandleClimbStarted;
-            GameEvents.OnClimbStopped += HandleClimbStopped;
+            CharacterEvents.OnClimbStarted += HandleClimbStarted;
+            CharacterEvents.OnClimbStopped += HandleClimbStopped;
         }
 
         void OnDisable()
         {
-            GameEvents.OnClimbStarted -= HandleClimbStarted;
-            GameEvents.OnClimbStopped -= HandleClimbStopped;
+            CharacterEvents.OnClimbStarted -= HandleClimbStarted;
+            CharacterEvents.OnClimbStopped -= HandleClimbStopped;
         }
 
         private void HandleClimbStarted()

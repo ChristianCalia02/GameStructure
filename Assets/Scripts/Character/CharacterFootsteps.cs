@@ -24,7 +24,7 @@ namespace Character {
             if (stepTimer >= stepInterval)
             {
                 stepTimer = 0f;
-                GameEvents.OnFootstep?.Invoke(transform.position);
+                AudioEvents.OnFootstep?.Invoke(transform.position);
             }
         }
     }

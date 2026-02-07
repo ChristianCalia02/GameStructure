@@ -1,7 +1,6 @@
 using Core.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static PlasticPipe.PlasticProtocol.Messages.Serialization.ItemHandlerMessagesSerialization;
 
 namespace Player
 {
@@ -17,7 +16,6 @@ namespace Player
         [SerializeField] private InputActionReference climb;
 
         [Header("Cam")]
-        //[SerializeField] private float cameraSpeedDirect = 0.25f;
         [SerializeField] private float cameraSpeedRate = 30f;
 
         void OnEnable()
@@ -65,35 +63,35 @@ namespace Player
             if (dir.sqrMagnitude > 1f)
                 dir.Normalize();
 
-            GameEvents.OnCharacterMove?.Invoke(dir, 1f);
+            CharacterEvents.OnMove?.Invoke(dir, 1f);
         }
 
         private void HandleSprint()
         {
             bool sprinting = sprint.action.ReadValue<float>() > 0.5f;
-            GameEvents.OnCharacterSprint?.Invoke(sprinting);
+            CharacterEvents.OnSprint?.Invoke(sprinting);
         }
 
         private void HandleCamera()
         {
             Vector2 look = lookRateAction.action.ReadValue<Vector2>();
 
-            GameEvents.OnCameraYaw?.Invoke(look.x * cameraSpeedRate * Time.deltaTime);
-            GameEvents.OnCameraPitch?.Invoke(-look.y * cameraSpeedRate * Time.deltaTime);
+            CameraEvents.OnYaw?.Invoke(look.x * cameraSpeedRate * Time.deltaTime);
+            CameraEvents.OnPitch?.Invoke(-look.y * cameraSpeedRate * Time.deltaTime);
         }
 
         private void OnToggleLook(InputAction.CallbackContext ctx)
         {
-            GameEvents.OnCameraToggle?.Invoke(true);
+            CameraEvents.OnToggleLook?.Invoke(true);
         }
 
         private void OnJumpStarted(InputAction.CallbackContext ctx)
         {
-            GameEvents.OnCharacterJump?.Invoke();
+            CharacterEvents.OnJump?.Invoke();
         }
         private void OnClimb(InputAction.CallbackContext ctx)
         {
-            GameEvents.OnCharacterClimb?.Invoke();
+            InputEvents.OnClimbPressed?.Invoke();
         }
     }
 }

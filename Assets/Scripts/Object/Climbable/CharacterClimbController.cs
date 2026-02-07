@@ -24,12 +24,12 @@ namespace Climb
 
         void OnEnable()
         {
-            GameEvents.OnCharacterClimb += TryClimb;
+            InputEvents.OnClimbPressed += TryClimb;
         }
 
         void OnDisable()
         {
-            GameEvents.OnCharacterClimb -= TryClimb;
+            InputEvents.OnClimbPressed += TryClimb;
         }
 
         private void TryClimb()

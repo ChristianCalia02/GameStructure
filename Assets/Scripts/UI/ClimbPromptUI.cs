@@ -10,12 +10,12 @@ namespace UI
 
         void OnEnable()
         {
-            GameEvents.OnClimbAvailable += Toggle;
+            UIEvents.OnClimbAvailable += Toggle;
         }
 
         void OnDisable()
         {
-            GameEvents.OnClimbAvailable -= Toggle;
+            UIEvents.OnClimbAvailable -= Toggle;
         }
 
         private void Toggle(bool show, Vector3 worldPos)

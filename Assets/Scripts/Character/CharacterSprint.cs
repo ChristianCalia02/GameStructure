@@ -25,12 +25,12 @@ namespace Character
 
         void OnEnable()
         {
-            GameEvents.OnCharacterSprint += SetSprint;
+            CharacterEvents.OnSprint += SetSprint;
         }
 
         void OnDisable()
         {
-            GameEvents.OnCharacterSprint -= SetSprint;
+            CharacterEvents.OnSprint -= SetSprint;
         }
 
         void Update()

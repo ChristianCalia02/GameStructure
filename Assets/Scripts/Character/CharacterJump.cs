@@ -17,12 +17,12 @@ namespace Character
 
         void OnEnable()
         {
-            GameEvents.OnCharacterJump += TryJump;
+            CharacterEvents.OnJump += TryJump;
         }
 
         void OnDisable()
         {
-            GameEvents.OnCharacterJump -= TryJump;
+            CharacterEvents.OnJump -= TryJump;
         }
 
         private void TryJump()
