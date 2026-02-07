@@ -1,24 +1,31 @@
-using UnityEngine;
 using Core.Events;
-using Core.Interfaces;
+using UnityEngine;
 
-namespace Character { 
+namespace Character
+{
     [RequireComponent(typeof(CharacterController))]
-    public class CharacterMotor : MonoBehaviour, ICharacterMover
+    public class CharacterMotor : MonoBehaviour
     {
-        [SerializeField] private float speed = 3f;
-        [SerializeField] private float rotationSpeed = 10f;
-
         private CharacterController controller;
-        private Vector3 moveInput;
 
-        [SerializeField] private float groundCheckDistance = 0.2f; // distance with foot
-        [SerializeField] private float groundCheckRadius = 0.3f;   // ray of spherecast
-        [SerializeField] private LayerMask groundMask;              // layer from ground
-        private bool isGrounded;
+        [Header("Movement")]
+        [SerializeField] private float rotationSpeed = 10f;
+        private Vector3 horizontalMove;
+        private float currentSpeed;
 
-        [SerializeField] private Animator animator;
+        [Header("Jump & Gravity")]
+        [SerializeField] private float jumpHeight = 2f;
+        [SerializeField] private float gravityMultiplier = 1f;
+        private float verticalVelocity;
+
+        [Header("Climbing")]
+        [SerializeField] private MonoBehaviour climbState;
+        private IClimbState climb => climbState as IClimbState;
+
         public bool IsMoving { get; private set; }
+        public bool IsGrounded => controller.isGrounded;
+
+        private bool hasMoveInput;
 
         void Awake()
         {
@@ -27,62 +34,78 @@ namespace Character {
 
         void OnEnable()
         {
-            GameEvents.OnCharacterMove += Move;
+            CharacterEvents.OnMove += Move;
         }
 
         void OnDisable()
         {
-            GameEvents.OnCharacterMove -= Move;
+            CharacterEvents.OnMove -= Move;
         }
 
         void Update()
         {
-            CheckGround();
+            if (climb != null && climb.IsHanging)
+                return;
 
-            Vector3 move = moveInput;
-            move.y = 0f;
-
-            // apply movement
-            controller.Move(move * speed * Time.deltaTime);
-
-            // rotate the player in the movement's direction
-            if (move.sqrMagnitude > 0.01f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(move);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-            }
-
-            // update animations
-            if (animator != null)
-            {
-                Vector3 localMove = transform.InverseTransformDirection(move);
-                float moveMag = localMove.magnitude;
-
-                animator.SetFloat("MoveX", localMove.x);
-                animator.SetFloat("MoveY", localMove.z);
-                animator.SetFloat("MoveMagnitude", moveMag);
-            }
-
-            IsMoving = move.sqrMagnitude > 0.01f && isGrounded;
-            moveInput = Vector3.zero;
+            ApplyGravity();
+            ApplyMovement();
         }
 
-        public void Move(Vector3 direction)
+        void LateUpdate()
         {
-            moveInput += direction;
+            UpdateIsMoving();
         }
 
-        private void CheckGround()
+        private void UpdateIsMoving()
         {
-            Vector3 origin = transform.position + Vector3.up * 0.1f; // leggermente sopra i piedi
-            isGrounded = Physics.SphereCast(
-                origin,
-                groundCheckRadius,
-                Vector3.down,
-                out RaycastHit hit,
-                groundCheckDistance + 0.1f,
-                groundMask,
-                QueryTriggerInteraction.Ignore
+            IsMoving = hasMoveInput;
+            hasMoveInput = false;
+        }
+
+        private void ApplyGravity()
+        {
+            if (IsGrounded && verticalVelocity < 0f)
+                verticalVelocity = -4f;
+
+            verticalVelocity += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
+        }
+
+        private void ApplyMovement()
+        {
+            Vector3 move =
+                horizontalMove * currentSpeed +
+                Vector3.up * verticalVelocity;
+
+            controller.Move(move * Time.deltaTime);
+
+            horizontalMove = Vector3.zero;
+        }
+
+        public void Move(Vector3 direction, float magnitude)
+        {
+            if (direction.sqrMagnitude > 0.001f)
+            {
+                hasMoveInput = true;
+                horizontalMove += direction.normalized * magnitude;
+
+                Quaternion targetRot = Quaternion.LookRotation(horizontalMove);
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    targetRot,
+                    rotationSpeed * Time.deltaTime
+                );
+            }
+        }
+
+        public void SetSpeed(float speed)
+        {
+            currentSpeed = speed;
+        }
+
+        public void Jump()
+        {
+            verticalVelocity = Mathf.Sqrt(
+                2f * jumpHeight * -Physics.gravity.y
             );
         }
     }

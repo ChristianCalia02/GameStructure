@@ -1,54 +1,97 @@
 using Core.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 namespace Player
 {
     public class PlayerInputController : MonoBehaviour
     {
+        [Header("Actions")]
         [SerializeField] private InputActionReference move;
-        [SerializeField] private InputActionReference look;
-        [SerializeField] private float lookSpeed = 120f;
+        [SerializeField] private InputActionReference sprint;
+        [SerializeField] private InputActionReference jump;
+        [SerializeField] private InputActionReference lookDirectAction;
+        [SerializeField] private InputActionReference lookRateAction;
+        [SerializeField] private InputActionReference toggleLook;
+        [SerializeField] private InputActionReference climb;
+
+        [Header("Cam")]
+        [SerializeField] private float cameraSpeedRate = 30f;
 
         void OnEnable()
         {
+            climb.action.started += OnClimb;
             move.action.Enable();
-            look.action.Enable();
+            sprint.action.Enable();
+            jump.action.Enable();
+            lookDirectAction.action.Enable();
+            lookRateAction.action.Enable();
+
+            jump.action.started += OnJumpStarted;
+            toggleLook.action.started += OnToggleLook;
         }
 
         void OnDisable()
         {
+            jump.action.started -= OnJumpStarted;
+            toggleLook.action.started -= OnToggleLook;
+
+            
             move.action.Disable();
-            look.action.Disable();
+            sprint.action.Disable();
+            jump.action.Disable();
+            lookDirectAction.action.Disable();
+            lookRateAction.action.Disable();
+            climb.action.started -= OnClimb;
         }
 
         void Update()
         {
+            HandleMovement();
+            HandleSprint();
+            HandleCamera();
+        }
+
+        private void HandleMovement()
+        {
             Vector2 input = move.action.ReadValue<Vector2>();
-            Vector2 lookInput = look.action.ReadValue<Vector2>();
+            Transform cam = Camera.main.transform;
 
-            Camera cam = Camera.main;
-            if (cam != null)
-            {
-                // calculate the direction based on XZ of the camera
-                Vector3 camForward = cam.transform.forward;
-                camForward.y = 0f;
-                camForward.Normalize();
+            Vector3 dir = cam.forward * input.y + cam.right * input.x;
+            dir.y = 0f;
 
-                Vector3 camRight = cam.transform.right;
-                camRight.y = 0f;
-                camRight.Normalize();
+            if (dir.sqrMagnitude > 1f)
+                dir.Normalize();
 
-                Vector3 moveDir = camForward * input.y + camRight * input.x;
+            CharacterEvents.OnMove?.Invoke(dir, 1f);
+        }
 
-                // shere direction with CharacterMotor
-                GameEvents.OnCharacterMove?.Invoke(moveDir);
-            }
+        private void HandleSprint()
+        {
+            bool sprinting = sprint.action.ReadValue<float>() > 0.5f;
+            CharacterEvents.OnSprint?.Invoke(sprinting);
+        }
 
-            // camera events
-            GameEvents.OnCameraYaw?.Invoke(lookInput.x * lookSpeed * Time.deltaTime);
-            GameEvents.OnCameraPitch?.Invoke(-lookInput.y * lookSpeed * Time.deltaTime);
+        private void HandleCamera()
+        {
+            Vector2 look = lookRateAction.action.ReadValue<Vector2>();
+
+            CameraEvents.OnYaw?.Invoke(look.x * cameraSpeedRate * Time.deltaTime);
+            CameraEvents.OnPitch?.Invoke(-look.y * cameraSpeedRate * Time.deltaTime);
+        }
+
+        private void OnToggleLook(InputAction.CallbackContext ctx)
+        {
+            CameraEvents.OnToggleLook?.Invoke(true);
+        }
+
+        private void OnJumpStarted(InputAction.CallbackContext ctx)
+        {
+            CharacterEvents.OnJump?.Invoke();
+        }
+        private void OnClimb(InputAction.CallbackContext ctx)
+        {
+            InputEvents.OnClimbPressed?.Invoke();
         }
     }
 }

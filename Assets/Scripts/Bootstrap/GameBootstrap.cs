@@ -8,7 +8,7 @@ namespace Bootstrap {
 
         void Start()
         {
-            GameEvents.OnCameraTargetChanged?.Invoke(player);
+            CameraEvents.OnTargetChanged?.Invoke(player);
         }
     }
 }

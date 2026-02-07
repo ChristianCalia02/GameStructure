@@ -7,19 +7,24 @@ namespace Cam {
     public abstract class CameraBase : MonoBehaviour, ICameraLook
     {
         protected Transform target;
+        public Camera cam { get; private set; }
 
         protected virtual void OnEnable()
         {
-            GameEvents.OnCameraTargetChanged += SetTarget;
-            GameEvents.OnCameraYaw += RotateYaw;
-            GameEvents.OnCameraPitch += RotatePitch;
+            cam = GetComponent<Camera>();
+
+            CameraEvents.OnTargetChanged += SetTarget;
+            CameraEvents.OnYaw += RotateYaw;
+            CameraEvents.OnPitch += RotatePitch;
+            CameraEvents.OnToggleLook += OnToggleLook;
         }
 
         protected virtual void OnDisable()
         {
-            GameEvents.OnCameraTargetChanged -= SetTarget;
-            GameEvents.OnCameraYaw -= RotateYaw;
-            GameEvents.OnCameraPitch -= RotatePitch;
+            CameraEvents.OnTargetChanged -= SetTarget;
+            CameraEvents.OnYaw -= RotateYaw;
+            CameraEvents.OnPitch -= RotatePitch;
+            CameraEvents.OnToggleLook -= OnToggleLook;
         }
 
         private void SetTarget(Transform t)
@@ -27,6 +32,13 @@ namespace Cam {
             target = t;
             AdaptToTarget();
         }
+
+        protected virtual void OnToggleLook(bool _)
+        {
+            ToggleLook();
+        }
+
+        public abstract void ToggleLook();
 
         public abstract void AdaptToTarget();
         public abstract void RotateYaw(float degrees);
