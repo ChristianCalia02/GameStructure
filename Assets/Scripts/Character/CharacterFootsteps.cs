@@ -17,6 +17,7 @@ namespace Character
 
         void Update()
         {
+            if (!root.IsGrounded) return;
             if (!root.IsMoving) return;
 
             stepTimer += Time.deltaTime;

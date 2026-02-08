@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Core.Interfaces
 {
     public interface ICharacterContext
@@ -15,5 +17,8 @@ namespace Core.Interfaces
 
         void ClearMovementInput();
         void ResetVerticalVelocity();
+        void UpdateMovementInput(Vector3 dir, float mag);
+        void SetSprint(bool sprint);
+        void TryJump();
     }
 }

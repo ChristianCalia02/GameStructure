@@ -15,13 +15,14 @@ namespace Character
             animator = animator ?? GetComponent<Animator>();
         }
 
-        void Update()
+        void LateUpdate()
         {
             if (root == null) return;
 
             animator.SetBool("IsGrounded", root.IsGrounded);
             animator.SetBool("IsMoving", root.IsMoving);
             animator.SetBool("IsRunning", root.IsSprinting);
+            animator.SetBool("IsHanging", root.Climb != null && root.Climb.IsHanging);
         }
     }
 }

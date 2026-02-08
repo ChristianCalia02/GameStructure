@@ -40,8 +40,10 @@ namespace Character
 
         // ICharacterContext Properties
         public bool IsGrounded => controller.isGrounded;
-        public bool IsMoving => movement.IsMoving;
-        public bool IsSprinting => sprint.IsSprinting;
+
+        private bool wasMovingThisFrame;
+        public bool IsMoving => wasMovingThisFrame;
+        public bool IsSprinting => sprint.IsSprinting && wasMovingThisFrame;
         public IClimbState Climb => climb;
 
 
@@ -69,20 +71,6 @@ namespace Character
             stateMachine.SetState(groundedState);
         }
 
-        void OnEnable()
-        {
-            CharacterEvents.OnMove += movement.Move;
-            CharacterEvents.OnSprint += sprint.SetSprint;
-            CharacterEvents.OnJump += HandleJump;
-        }
-
-        void OnDisable()
-        {
-            CharacterEvents.OnMove -= movement.Move;
-            CharacterEvents.OnSprint -= sprint.SetSprint;
-            CharacterEvents.OnJump -= HandleJump;
-        }
-
         void Update()
         {
             //movement.Reset();
@@ -98,23 +86,35 @@ namespace Character
 
             gravity.UpdateGravity(IsGrounded);
 
-            Vector3 move = movement.HorizontalMove +
+            Vector3 horizontal = movement.HorizontalMove;
+
+            wasMovingThisFrame = horizontal.sqrMagnitude > 0.001f;
+
+            Vector3 move = horizontal +
                            Vector3.up * gravity.VerticalVelocity;
 
             controller.Move(move * Time.deltaTime);
 
-            rotation.RotateTowards(transform, movement.HorizontalMove);
+            rotation.RotateTowards(transform, horizontal);
 
             movement.Reset();
         }
 
 
-        // Jump
-        private void HandleJump()
-        {
-            if (Climb != null && Climb.IsHanging)
-                return;
 
+        public void UpdateMovementInput(Vector3 dir, float mag)
+        {
+            movement.Move(dir, mag);
+        }
+
+        public void SetSprint(bool sprinting)
+        {
+            sprint.SetSprint(sprinting);
+        }
+
+        // Jump
+        public void TryJump()
+        {
             if (!IsGrounded)
                 return;
 

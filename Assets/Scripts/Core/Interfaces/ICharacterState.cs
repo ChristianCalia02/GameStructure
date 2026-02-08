@@ -5,5 +5,6 @@ namespace Core.Interfaces
         void Enter();
         void Exit();
         void Update();
+
     }
 }
