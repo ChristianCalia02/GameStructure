@@ -1,4 +1,3 @@
-using Core.Events;
 using UnityEngine;
 
 namespace Character
@@ -7,12 +6,14 @@ namespace Character
     public class CharacterAnimator : MonoBehaviour
     {
         [SerializeField] private Animator animator;
-        private CharacterRoot root;
+        [SerializeField] private CharacterRoot root;
+
+        private bool wasGrounded;
 
         void Awake()
         {
-            root = GetComponent<CharacterRoot>();
             animator = animator ?? GetComponent<Animator>();
+            root = root ?? GetComponent<CharacterRoot>();
         }
 
         void LateUpdate()
@@ -23,6 +24,13 @@ namespace Character
             animator.SetBool("IsMoving", root.IsMoving);
             animator.SetBool("IsRunning", root.IsSprinting);
             animator.SetBool("IsHanging", root.Climb != null && root.Climb.IsHanging);
+
+            if (wasGrounded && !root.IsGrounded)
+            {
+                animator.SetTrigger("Jump");
+            }
+
+            wasGrounded = root.IsGrounded;
         }
     }
 }

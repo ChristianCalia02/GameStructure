@@ -27,17 +27,16 @@ namespace Audio
         void OnEnable()
         {
             AudioEvents.OnFootstep += PlayFootstep;
+            AudioEvents.OnPlayAtPosition += PlaySoundAtPosition;
+            AudioEvents.OnPlayUI += PlayUISound;
         }
 
         void OnDisable()
         {
             AudioEvents.OnFootstep -= PlayFootstep;
+            AudioEvents.OnPlayAtPosition -= PlaySoundAtPosition;
+            AudioEvents.OnPlayUI -= PlayUISound;
         }
-
-        private void PlayFootstep(Vector3 position) => PlayClip(defaultFootstep, position, 1f);
-        private void PlaySoundAtPosition(AudioClip clip, Vector3 position) => PlayClip(clip, position, 1f);
-        private void PlayUISound(AudioClip clip) => PlayClip(clip, Vector3.zero, 0f);
-
 
         private void PlayClip(AudioClip clip, Vector3 position, float spatialBlend)
         {
@@ -52,21 +51,14 @@ namespace Audio
             StartCoroutine(ReleaseWhenDone(src));
         }
 
+        private void PlayFootstep(Vector3 position) => PlayClip(defaultFootstep, position, 1f);
+        private void PlaySoundAtPosition(AudioClip clip, Vector3 position) => PlayClip(clip, position, 1f);
+        private void PlayUISound(AudioClip clip) => PlayClip(clip, Vector3.zero, 0f);
+
         private AudioSource GetSource()
         {
-            AudioSource src;
-
-            if (pool.Count > 0)
-            {
-                src = pool.Dequeue();
-            }
-            else
-            {
-                src = Instantiate(audioSourcePrefab, transform);
-            }
-
-            src.gameObject.SetActive(true);  
-            //src.clip = null;                 
+            AudioSource src = pool.Count > 0 ? pool.Dequeue() : Instantiate(audioSourcePrefab, transform);
+            src.gameObject.SetActive(true);
             return src;
         }
 

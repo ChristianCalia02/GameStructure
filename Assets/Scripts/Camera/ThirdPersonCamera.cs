@@ -8,10 +8,8 @@ public class ThirdPersonCamera : CameraBase
 
 
     [Tooltip("X: offset along camera's right vector, Y: vertical offset transformed by the target")]
-    public Vector3 cameraOffsets = new Vector3(0.6f, 1.65f, 0.0f);
-
-    [System.NonSerialized]
-    public bool flipSide = false;
+    public Vector3 cameraOffsets { get; private set; } = new Vector3(0.6f, 1.65f, 0f);
+    public bool flipSide { get; private set; } = false;
 
 
 
@@ -41,7 +39,7 @@ public class ThirdPersonCamera : CameraBase
     [SerializeField]
     private LayerMask collisionCheckLayers = Physics.AllLayers;
 
-    public Vector3 focusPoint =>
+    private Vector3 CalculateFocusPoint() =>
     target.TransformPoint(Vector3.up * cameraOffsets.y) +
     (flipSide ? currentRotation * (-Vector3.right) : currentRotation * Vector3.right) * cameraOffsets.x;
 
@@ -68,7 +66,7 @@ public class ThirdPersonCamera : CameraBase
         if (target == null)
             return;
 
-        Vector3 focusPoint = this.focusPoint;
+        Vector3 focusPoint = CalculateFocusPoint();
 
         //	Smooth focus point, if requested. Hard set otherwise.
         if (
