@@ -100,7 +100,10 @@ namespace Character
             movement.Reset();
         }
 
-
+        public void MovementInput(Vector3 direction, float magnitude)
+        {
+            movement.Move(direction, magnitude);
+        }
 
         public void UpdateMovementInput(Vector3 dir, float mag)
         {
@@ -152,6 +155,21 @@ namespace Character
         public void ClearMovementInput()
         {
             movement.Reset();
+        }
+
+        public void HandleMove(Vector3 dir, float magnitude)
+        {
+            stateMachine.HandleMove(dir, magnitude);
+        }
+
+        public void HandleSprint(bool sprint)
+        {
+            stateMachine.HandleSprint(sprint);
+        }
+
+        public void HandleJump()
+        {
+            stateMachine.HandleJump();
         }
     }
 }

@@ -2055,6 +2055,7 @@ MonoBehaviour:
   toggleLook: {fileID: 6676825569510334988, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   climb: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   cameraSpeedRate: 30
+  character: {fileID: 1275819702}
 --- !u!4 &191493612
 Transform:
   m_ObjectHideFlags: 0

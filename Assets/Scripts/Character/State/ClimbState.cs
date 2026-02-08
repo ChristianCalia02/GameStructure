@@ -19,9 +19,7 @@ namespace State
             root.ResetVerticalVelocity();
         }
 
-        public void Exit()
-        {
-        }
+        public void Exit() { }
 
         public void Update()
         {
@@ -31,5 +29,10 @@ namespace State
                 return;
             }
         }
+        public void HandleMove(Vector3 dir, float magnitude) { }
+
+        public void HandleSprint(bool sprint) { }
+
+        public void HandleJump() { }
     }
 }

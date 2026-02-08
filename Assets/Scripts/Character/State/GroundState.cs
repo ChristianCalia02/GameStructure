@@ -1,4 +1,3 @@
-using Core.Events;
 using Core.Interfaces;
 using UnityEngine;
 
@@ -13,19 +12,9 @@ namespace State
             this.root = root;
         }
 
-        public void Enter()
-        {
-            CharacterEvents.OnMove += OnMove;
-            CharacterEvents.OnSprint += OnSprint;
-            CharacterEvents.OnJump += OnJump;
-        }
+        public void Enter() { }
 
-        public void Exit()
-        {
-            CharacterEvents.OnMove -= OnMove;
-            CharacterEvents.OnSprint -= OnSprint;
-            CharacterEvents.OnJump -= OnJump;
-        }
+        public void Exit() { }
 
         public void Update()
         {
@@ -38,17 +27,19 @@ namespace State
             root.UpdateMovementLogic();
         }
 
-        private void OnMove(Vector3 dir, float mag)
+        
+
+        public void HandleMove(Vector3 dir, float magnitude)
         {
-            root.UpdateMovementInput(dir, mag);
+            root.UpdateMovementInput(dir, magnitude);
         }
 
-        private void OnSprint(bool sprint)
+        public void HandleSprint(bool sprint)
         {
             root.SetSprint(sprint);
         }
 
-        private void OnJump()
+        public void HandleJump()
         {
             root.TryJump();
         }

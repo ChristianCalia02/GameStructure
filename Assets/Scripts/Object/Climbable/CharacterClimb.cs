@@ -31,13 +31,11 @@ namespace Climb
             if (!CanClimb) return;
 
             IsHanging = true;
-            CharacterEvents.OnClimbStarted?.Invoke();
         }
 
         public void StopHang()
         {
             IsHanging = false;
-            CharacterEvents.OnClimbStopped?.Invoke();
         }
     }
 }

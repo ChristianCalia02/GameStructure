@@ -1,6 +1,7 @@
 using Core.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Character;
 
 namespace Player
 {
@@ -17,6 +18,8 @@ namespace Player
 
         [Header("Cam")]
         [SerializeField] private float cameraSpeedRate = 30f;
+
+        [SerializeField] private CharacterRoot character;
 
         void OnEnable()
         {
@@ -56,20 +59,20 @@ namespace Player
         {
             Vector2 input = move.action.ReadValue<Vector2>();
             Transform cam = Camera.main.transform;
-
             Vector3 dir = cam.forward * input.y + cam.right * input.x;
             dir.y = 0f;
 
             if (dir.sqrMagnitude > 1f)
                 dir.Normalize();
 
-            CharacterEvents.OnMove?.Invoke(dir, 1f);
+
+            character.MovementInput(dir, 1f); 
         }
 
         private void HandleSprint()
         {
             bool sprinting = sprint.action.ReadValue<float>() > 0.5f;
-            CharacterEvents.OnSprint?.Invoke(sprinting);
+            character.HandleSprint(sprinting);
         }
 
         private void HandleCamera()
@@ -87,7 +90,7 @@ namespace Player
 
         private void OnJumpStarted(InputAction.CallbackContext ctx)
         {
-            CharacterEvents.OnJump?.Invoke();
+            character.HandleJump();
         }
         private void OnClimb(InputAction.CallbackContext ctx)
         {
