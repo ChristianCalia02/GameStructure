@@ -27,45 +27,25 @@ namespace Audio
         void OnEnable()
         {
             AudioEvents.OnFootstep += PlayFootstep;
-            AudioEvents.OnPlayAtPosition += PlaySoundAtPosition;
-            AudioEvents.OnPlayUI += PlayUISound;
         }
 
         void OnDisable()
         {
             AudioEvents.OnFootstep -= PlayFootstep;
-            AudioEvents.OnPlayAtPosition -= PlaySoundAtPosition;
-            AudioEvents.OnPlayUI -= PlayUISound;
         }
 
-        private void PlayFootstep(Vector3 position)
-        {
-            AudioEvents.OnPlayAtPosition?.Invoke(
-                defaultFootstep,
-                position
-            );
-        }
+        private void PlayFootstep(Vector3 position) => PlayClip(defaultFootstep, position, 1f);
+        private void PlaySoundAtPosition(AudioClip clip, Vector3 position) => PlayClip(clip, position, 1f);
+        private void PlayUISound(AudioClip clip) => PlayClip(clip, Vector3.zero, 0f);
 
-        private void PlaySoundAtPosition(AudioClip clip, Vector3 position)
+
+        private void PlayClip(AudioClip clip, Vector3 position, float spatialBlend)
         {
             if (clip == null) return;
 
             AudioSource src = GetSource();
             src.transform.position = position;
-            src.spatialBlend = 1f;
-            src.clip = clip;
-            src.Play();
-
-            StartCoroutine(ReleaseWhenDone(src));
-        }
-
-        private void PlayUISound(AudioClip clip)
-        {
-            if (clip == null) return;
-
-            AudioSource src = GetSource();
-            src.transform.position = Vector3.zero;
-            src.spatialBlend = 0f;
+            src.spatialBlend = spatialBlend;
             src.clip = clip;
             src.Play();
 
