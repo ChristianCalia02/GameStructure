@@ -1,54 +1,33 @@
-using Core.Events;
 using UnityEngine;
 
 namespace Character
 {
-    [RequireComponent(typeof(CharacterMotor))]
-    public class CharacterSprint : MonoBehaviour
+    public class CharacterSprint
     {
-        [SerializeField] private float walkSpeed = 3f;
-        [SerializeField] private float runSpeed = 6f;
-        [SerializeField] private float deceleration = 10f;
-        [SerializeField] private Animator animator;
+        private readonly float walkSpeed;
+        private readonly float runSpeed;
+        private readonly float acceleration;
 
-        private CharacterMotor motor;
         private float currentSpeed;
-        public bool isSprinting;
+        private bool isSprinting;
+
+        public float CurrentSpeed => currentSpeed;
         public bool IsSprinting => isSprinting;
 
-        void Awake()
+        public CharacterSprint(float walkSpeed, float runSpeed, float acceleration)
         {
-            motor = GetComponent<CharacterMotor>();
+            this.walkSpeed = walkSpeed;
+            this.runSpeed = runSpeed;
+            this.acceleration = acceleration;
             currentSpeed = walkSpeed;
-            motor.SetSpeed(currentSpeed);
         }
 
-        void OnEnable()
-        {
-            CharacterEvents.OnSprint += SetSprint;
-        }
+        public void SetSprint(bool sprint) => isSprinting = sprint;
 
-        void OnDisable()
-        {
-            CharacterEvents.OnSprint -= SetSprint;
-        }
-
-        void Update()
+        public void Update()
         {
             float targetSpeed = isSprinting ? runSpeed : walkSpeed;
-
-            currentSpeed = Mathf.MoveTowards(
-                currentSpeed,
-                targetSpeed,
-                deceleration * Time.deltaTime
-            );
-
-            motor.SetSpeed(currentSpeed);
-        }
-
-        private void SetSprint(bool sprinting)
-        {
-            isSprinting = sprinting;
+            currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, acceleration * Time.deltaTime);
         }
     }
 }

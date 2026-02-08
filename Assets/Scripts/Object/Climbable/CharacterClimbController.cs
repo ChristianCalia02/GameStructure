@@ -8,7 +8,7 @@ namespace Climb
     public class CharacterClimbController : MonoBehaviour
     {
         private CharacterClimb climb;
-        private CharacterMotor motor;
+        private CharacterRoot root;
 
         [SerializeField] private Transform leftHandTarget;
         [SerializeField] private Transform rightHandTarget;
@@ -19,7 +19,7 @@ namespace Climb
         void Awake()
         {
             climb = GetComponent<CharacterClimb>();
-            motor = GetComponent<CharacterMotor>();
+            root = GetComponent<CharacterRoot>();
         }
 
         void OnEnable()
@@ -29,7 +29,7 @@ namespace Climb
 
         void OnDisable()
         {
-            InputEvents.OnClimbPressed += TryClimb;
+            InputEvents.OnClimbPressed -= TryClimb;
         }
 
         private void TryClimb()
@@ -37,7 +37,6 @@ namespace Climb
             if (climb.IsHanging)
             {
                 climb.StopHang();
-                motor.enabled = true;
                 return;
             }
 
@@ -45,7 +44,6 @@ namespace Climb
                 return;
 
             climb.StartHang();
-            motor.enabled = false;
             SnapToLedge();
         }
 

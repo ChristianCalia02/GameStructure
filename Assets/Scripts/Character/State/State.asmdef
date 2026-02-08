@@ -1,10 +1,8 @@
 {
-    "name": "Character",
-    "rootNamespace": "Character",
+    "name": "State",
+    "rootNamespace": "",
     "references": [
-        "GUID:9bfef825bf1f65849abc38b6aa408987",
-        "GUID:7feeb8599c91a0248b4d11017b154a93",
-        "GUID:68e334afe7f6e844bb6fa388ad6b540a"
+        "GUID:7feeb8599c91a0248b4d11017b154a93"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,23 +1,23 @@
 using Core.Events;
 using UnityEngine;
 
-namespace Character {
-    [RequireComponent(typeof(CharacterMotor))]
+namespace Character
+{
+    [RequireComponent(typeof(CharacterRoot))]
     public class CharacterFootsteps : MonoBehaviour
     {
         [SerializeField] private float stepInterval = 0.5f;
-
         private float stepTimer;
-        private CharacterMotor motor;
+        private CharacterRoot root;
 
         void Awake()
         {
-            motor = GetComponent<CharacterMotor>();
+            root = GetComponent<CharacterRoot>();
         }
 
         void Update()
         {
-            if (!motor.IsMoving) return;
+            if (!root.IsMoving) return;
 
             stepTimer += Time.deltaTime;
 

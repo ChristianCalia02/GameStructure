@@ -14355,16 +14355,10 @@ PrefabInstance:
       addedObject: {fileID: 1275819690}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1275819689}
+      addedObject: {fileID: 1275819702}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1275819688}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1275819693}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1275819694}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1275819695}
@@ -14402,22 +14396,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Character::Character.CharacterFootsteps
   stepInterval: 0.5
---- !u!114 &1275819689
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1275819687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 386d18bd2dfa54444917a037e70e3f21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Character::Character.CharacterMotor
-  rotationSpeed: 10
-  jumpHeight: 2
-  gravityMultiplier: 1
-  climbState: {fileID: 0}
 --- !u!143 &1275819690
 CharacterController:
   m_ObjectHideFlags: 0
@@ -14453,35 +14431,6 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 4643fa2e84dd29c4e8e3a8ceed5bd2c7, type: 3}
   m_PrefabInstance: {fileID: 1275819686}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1275819693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1275819687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bbf22fd657527543a3adb2850cc4f42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Character::Character.CharacterSprint
-  walkSpeed: 3
-  runSpeed: 6
-  deceleration: 100
-  animator: {fileID: 1275819692}
-  isSprinting: 0
---- !u!114 &1275819694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1275819687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8161b8246625b1141af60cc5350b54cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Character::Character.CharacterJump
 --- !u!114 &1275819695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14578,6 +14527,25 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1275819702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1275819687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2534a154546a246448b6db2656015b8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Character::Character.CharacterRoot
+  walkSpeed: 3
+  runSpeed: 6
+  acceleration: 10
+  rotationSpeed: 10
+  jumpHeight: 2
+  gravityMultiplier: 1
+  characterAnimator: {fileID: 1275819692}
 --- !u!1001 &1285653821
 PrefabInstance:
   m_ObjectHideFlags: 0

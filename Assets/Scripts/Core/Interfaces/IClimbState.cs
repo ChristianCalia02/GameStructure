@@ -1,7 +1,8 @@
-using UnityEngine;
-
-public interface IClimbState
+namespace Core.Interfaces
 {
-    bool IsHanging { get; }
+    public interface IClimbState
+    {
+        bool IsHanging { get; }
+    }
 }
 
