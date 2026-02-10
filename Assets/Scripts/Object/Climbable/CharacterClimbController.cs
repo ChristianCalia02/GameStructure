@@ -1,20 +1,16 @@
-using Core.Events;
 using Character;
+using Core.Events;
+using Core.Interfaces;
 using UnityEngine;
 
 namespace Climb
 {
     [RequireComponent(typeof(CharacterClimb))]
+    [RequireComponent(typeof(CharacterRoot))]
     public class CharacterClimbController : MonoBehaviour
     {
         private CharacterClimb climb;
         private CharacterRoot root;
-
-        [SerializeField] private Transform leftHandTarget;
-        [SerializeField] private Transform rightHandTarget;
-
-        [SerializeField] private float verticalOffset = 0.0f;    // hight over the edge
-        [SerializeField] private float forwardOffset = 0.1f;     // distance from the edge
 
         void Awake()
         {
@@ -36,28 +32,30 @@ namespace Climb
         {
             if (climb.IsHanging)
             {
-                climb.StopHang();
+                climb.StopClimb(root);
                 return;
             }
 
-            if (!climb.CanClimb)
+            if (!climb.TryStartClimb(root))
                 return;
 
-            climb.StartHang();
-            SnapToLedge();
+            SnapToClimbPoint();
         }
 
-        private void SnapToLedge()
+        private void SnapToClimbPoint()
         {
-            var controller = GetComponent<CharacterController>();
+            Transform climbTransform = climb.GetCurrentClimbTransform();
+            if (climbTransform == null) return;
 
-            Vector3 basePos = climb.LedgePoint - climb.LedgeNormal * forwardOffset;
+            IClimbable climbable = climbTransform.GetComponent<IClimbable>();
+            if (climbable == null) return;
 
+            CharacterController controller = GetComponent<CharacterController>();
             controller.enabled = false;
 
-            transform.position = basePos + Vector3.up * verticalOffset;
-
-            transform.forward = -climb.LedgeNormal;
+            // Snap pos and rot
+            transform.position = ((ClimbableLedge)climbable).GetSnapPosition();
+            transform.forward = ((ClimbableLedge)climbable).GetSnapForward();
 
             controller.enabled = true;
         }

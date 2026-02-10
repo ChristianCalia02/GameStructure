@@ -4,38 +4,45 @@ using UnityEngine;
 
 namespace Climb
 {
-    public class CharacterClimb : MonoBehaviour, IClimbState
+    public class CharacterClimb : MonoBehaviour
     {
-        public bool CanClimb => currentLedge != null;
         public bool IsHanging { get; private set; }
 
-        public Vector3 LedgePoint => currentLedge.LedgePoint;
-        public Vector3 LedgeNormal => currentLedge.LedgeNormal;
+        private IClimbable currentClimbable;
 
-        private ClimbableLedge currentLedge;
-
-        public void SetAvailableLedge(ClimbableLedge ledge)
+        public void SetAvailableClimbable(IClimbable climbable)
         {
-            currentLedge = ledge;
-            UIEvents.OnClimbAvailable?.Invoke(true, ledge.LedgePoint);
+            currentClimbable = climbable;
+            UIEvents.OnClimbAvailable?.Invoke(true, climbable.GetClimbTransform().position);
         }
 
-        public void ClearLedge()
+        public void ClearClimbable()
         {
-            currentLedge = null;
-            UIEvents.OnClimbAvailable?.Invoke(false, Vector3.zero);
+            if (currentClimbable != null)
+            {
+                UIEvents.OnClimbAvailable?.Invoke(false, Vector3.zero);
+                currentClimbable = null;
+            }
         }
 
-        public void StartHang()
+        public bool TryStartClimb(ICharacterContext character)
         {
-            if (!CanClimb) return;
+            if (currentClimbable == null) return false;
+            if (!currentClimbable.CanClimb(character)) return false;
 
             IsHanging = true;
+            currentClimbable.OnClimbStart(character);
+            return true;
         }
 
-        public void StopHang()
+        public void StopClimb(ICharacterContext character)
         {
+            if (!IsHanging) return;
+
             IsHanging = false;
+            currentClimbable?.OnClimbStop(character);
         }
+
+        public Transform GetCurrentClimbTransform() => currentClimbable?.GetClimbTransform();
     }
 }

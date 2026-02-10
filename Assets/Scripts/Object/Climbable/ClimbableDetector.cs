@@ -1,37 +1,37 @@
-using Climb;
+using Core.Interfaces;
 using UnityEngine;
 
-
-namespace Climb {
+namespace Climb
+{
     [RequireComponent(typeof(CharacterClimb))]
     public class ClimbDetector : MonoBehaviour
     {
         private CharacterClimb climb;
-        private ClimbableLedge currentLedge;
+        private IClimbable currentClimbable;
 
-        void Awake()
+        private void Awake()
         {
-            climb = GetComponentInParent<CharacterClimb>();
+            climb = GetComponent<CharacterClimb>();
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent(out ClimbableLedge ledge))
+            if (!other.TryGetComponent(out IClimbable climbable))
                 return;
 
-            currentLedge = ledge;
-            climb.SetAvailableLedge(ledge);
+            currentClimbable = climbable;
+            climb.SetAvailableClimbable(climbable);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (currentLedge == null)
+            if (currentClimbable == null)
                 return;
 
-            if (other.GetComponent<ClimbableLedge>() == currentLedge)
+            if (other.TryGetComponent(out IClimbable climbable) && climbable == currentClimbable)
             {
-                climb.ClearLedge();
-                currentLedge = null;
+                climb.ClearClimbable();
+                currentClimbable = null;
             }
         }
     }
